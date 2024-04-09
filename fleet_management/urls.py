@@ -16,14 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 # Importa la función path del módulo django.urls, que se usa para definir URL en una app Django.
-from django.urls import path
+from django.urls import path, include
 from fleet.views import list_taxis
 '''
 Toca asociar la vista creada a una URL especifica
 '''
+# Define el prefijo base para todas las URLs de tu API
+base_api_path = 'fleet-managment/'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/taxis/', list_taxis, name='list_taxis'),
+    path(f'{base_api_path}api/taxis/', list_taxis, name='list_taxis')#URL para acceder a la documentación en swagger
 ]
 '''
 Cuando se accede a esta URL en el navegador, Django llamará a la función list_taxis definida. 
