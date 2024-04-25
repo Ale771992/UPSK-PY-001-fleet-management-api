@@ -28,10 +28,11 @@ Este método define cómo se representa el objeto cuando se convierte a una cade
 
 class Trajectories(models.Model):
     id = models.AutoField(primary_key=True)
-    date = models.DateField()
+    date = models.DateTimeField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     taxi = models.ForeignKey(Taxis, on_delete=models.CASCADE)
+   
 
     '''
     El argumento on_delete=models.CASCADE indica que si un registro relacionado en taxis se elimina, 

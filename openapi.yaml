@@ -44,3 +44,5 @@ paths:
                         plate:
                           type: string
                           description: Placa del taxi.
+
+drf_yasg
