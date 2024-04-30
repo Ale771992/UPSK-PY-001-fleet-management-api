@@ -5,10 +5,7 @@ from django.core.paginator import Paginator
 from fleet.models import Taxis  # Importo el modelo
 
 # Test para verificar que el endpoint de la API devuelve el codigo HTTP correcto.
-'''
-reverse es una función de django que se usa para obtener la URL asociada al patron con el 
-nombre 'list_taxis'.
-'''
+
 class TestTaxisList(TestCase):
     def setUp(self):
         # Método setUp: creamos un cliente que usaremos para hacer solicitudes a nuestra aplicación.
@@ -16,6 +13,7 @@ class TestTaxisList(TestCase):
 
     def test_list_taxis(self):
         # Hacer una solicitud GET al endpoint
+        # reverse se usa para obtener la URL asociada a, en este caso una vista. 
         response = self.client.get(reverse('list_taxis'))
 
         # Verificar que la respuesta tiene un codigo HTTP 200
@@ -42,6 +40,10 @@ class TestTaxisList(TestCase):
 
 #Tests unitarios (views)
 class TestViewListTaxis(TestCase):
+    '''
+    El setUp (configuración) se ejecuta antes de cada prueba, se usa para configurar el entorno 
+    para la prueba, como la creación de datos de prueba.
+    '''
     def setUp(self):
         # Creo instancias ficticias de taxis para ser usadas en el test 
         Taxis.objects.create(id = 4578, plate = "JFUA-9384")

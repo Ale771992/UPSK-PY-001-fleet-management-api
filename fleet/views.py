@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from .models import Taxis
 from .models import Trajectories
-from datetime import datetime
+from django.utils.timezone import make_aware
 
 # from rest_framework.decorators import api_view
 # Create your views here.
@@ -47,11 +47,13 @@ def list_trajectories(request, taxi_id):
 # El filtro de date, filtra los resultados de info_taxis, para que se muestren los resultados que tienen la fecha especificada
 
     # Paginamos los resultados
-    page_size = 10
+    page_size = 20
     paginator = Paginator(info_taxis, page_size)
     page_number = request.GET.get('page')
     try:
         trajectories_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        trajectories_page = paginator.page(1)
     except EmptyPage:
         trajectories_page = paginator.page(paginator.num_pages)
     # Crear lista de datos de las trayectorias (latitud, longitud, timestamp)
