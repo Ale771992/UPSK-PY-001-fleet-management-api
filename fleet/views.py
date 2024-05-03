@@ -13,14 +13,14 @@ Estas vistas acceden a la base de datos para recuperar la información, procesar
 La vista es responsable de procesar la solicitud HTTP y devolver una respuesta. 
 '''
 
-# Obtener los taxis
+# Vista para endpoint 1: Obtener los taxis
 
 def list_taxis(request):
     # Realiza una consulta a la base de datos para obtener todos los objetos de modelo de taxis
     all_taxis = Taxis.objects.all()
 # Numero de elementos por pagina
     page_size = 10
-
+# El Paginator recibe 2 argumentos: los elementos que deseas paginar y el tamaño de la pagina
     paginator = Paginator(all_taxis, page_size)
 
     page_number = request.GET.get('page')
@@ -39,7 +39,7 @@ def list_taxis(request):
 
     return JsonResponse(taxis_data, safe=False)
 
-# Obtener las trayectorias de los taxis dado un ID y una fecha; la informacion de respuesta sera latitud, longitud y timestamp.
+# Vista para endpoint 2: Obtener las trayectorias de los taxis dado un ID y fecha; la respuesta sera latitud, longitud y timestamp.
 
 # 'request' es el objeto que representa la solicitud http
 def list_trajectories(request, taxi_id):
@@ -72,4 +72,31 @@ def list_trajectories(request, taxi_id):
 Django, para devolver una respuesta en JSON, solo considera datos seguros o safe a los diccionarios o listas.
 Si mi respuesta, no es ni lista ni diccionario, le debo indicar a Django que no es safe, pero que aun asi 
 redenrice mi respuesta.
+'''
+
+# Vista para endpoint 3: Obtener la ultima ubicación por cada taxi 
+
+def last_location(request):
+    all_taxis = Taxis.objects.all()
+    location_data = []
+    for taxi in all_taxis:
+        try:
+            #.latest() es un metodo que se usa para recuperar el objeto más reciente
+            latest_trajectory = Trajectories.objects.filter(taxi = taxi).latest('date')
+            location_info = {
+                'id': taxi.id,
+                'placa': taxi.plate,
+                'latitud': latest_trajectory.latitude,
+                'longitud': latest_trajectory.longitude,
+                'fecha': latest_trajectory.date.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            location_data.append(location_info)
+        except Trajectories.DoesNotExist:
+          pass
+    return JsonResponse(location_data, safe=False)
+
+'''
+Cada vez que se encuentra la ultima ubicacion de un taxi, se crea un diccionario llamado location_info
+con los datos especificados. Y luego ese diccionario se agrega a la lista location_data usando el 
+metodo append()
 '''
